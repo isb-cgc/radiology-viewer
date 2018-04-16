@@ -62,6 +62,10 @@ wait_on_lock
 ### Install docker
 ./build/install_docker.sh
 
+wait_on_lock
+### Install docker-compose
+./build/install_docker-compose.sh
+
 ### Automatically run a script on rebooting
 crontab -l > mycron 
 echo "@reboot $HOME/radiology-viewer/startup.sh $VIEWER_VERSION $SERVER_ADMIN $SERVER_NAME $SERVER_ALIAS $WEBAPP" >> mycron
@@ -74,9 +78,9 @@ rm mycron
 ### Configure for Orthanc
 #./build/config_orthanc.sh
 
-### Create the mount point for the DB, which we keep on a separate image that survives replacing the VM
+### Create the mount point for the DB and index, which we keep on separate images that survive replacing the VM
 sudo mkdir -p /mnt/disks/orthanc-db
-
+sudo mkdir -p /mnt/disks/orthanc-index
 
 ### Install Tenable
 ./build/install_tenable.sh

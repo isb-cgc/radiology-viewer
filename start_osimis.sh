@@ -3,5 +3,5 @@
 set -x
 
 pushd osimis
-docker-compose up --build -d
+sudo docker-compose up --build -d
 popd

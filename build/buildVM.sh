@@ -106,8 +106,8 @@ fi
 #
 # Attach disks holding the Orthanc DB and index
 #
-gcloud compute instances attach-disk "${MACHINE_NAME}" --disk="${DB_DISK_NAME}" --device-name="${DB_DISK_NAME}" --project="${PROJECT}" --mode="ro" --zone="${ZONE}"
-gcloud compute instances attach-disk "${MACHINE_NAME}" --disk="${INDEX_DISK_NAME}" --device-name="${INDEX_DISK_NAME}" --project="${PROJECT}" --mode="ro" --zone="${ZONE}"
+gcloud compute instances attach-disk "${MACHINE_NAME}" --disk="${DB_DISK_NAME}" --device-name="${DB_DISK_NAME}" --project="${PROJECT}" --mode="rw" --zone="${ZONE}"
+gcloud compute instances attach-disk "${MACHINE_NAME}" --disk="${INDEX_DISK_NAME}" --device-name="${INDEX_DISK_NAME}" --project="${PROJECT}" --mode="rw" --zone="${ZONE}"
 
 #
 # Copy and run a config script
