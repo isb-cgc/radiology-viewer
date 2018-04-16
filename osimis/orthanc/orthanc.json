@@ -1,0 +1,16 @@
+{
+        "Name": "isb-cgc",
+        "DicomAet": "ISB-CGC",
+//        "DicomModalities": {
+//                "bar": ["BAR", "bar", 104]
+//        },
+    // HTTP port for the REST services and for the GUI
+    "HttpPort" : 8042,
+        "PostgreSQL": {
+                "EnableIndex": true,
+                "EnableStorage": false,
+                "Host": "orthanc-index",
+                "Database": "postgres",
+                "Username": "postgres"
+        }
+}
