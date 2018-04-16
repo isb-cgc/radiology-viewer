@@ -54,7 +54,7 @@ sudo apt-get -y install git
 
 wait_on_lock
 ### Other installation/config/startup scripts are in the radiology-viewer repo
-git clone --branch pg https://github.com/bcli4d/radiology-viewer.git
+git clone https://github.com/isb-cgc/radiology-viewer.git
 
 cd ./radiology-viewer
 
@@ -73,6 +73,10 @@ rm mycron
 
 ### Configure for Orthanc
 #./build/config_orthanc.sh
+
+### Create the mount point for the DB, which we keep on a separate image that survives replacing the VM
+sudo mkdir -p /mnt/disks/orthanc-db
+
 
 ### Install Tenable
 ./build/install_tenable.sh

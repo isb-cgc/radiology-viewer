@@ -58,7 +58,8 @@ STATIC_IP_ADDRESS=$BASE_NAME-$1
 MACHINE_NAME=$BASE_NAME-$1
 MACHINE_DESC="dicom viewer server for "$1
 MACHINE_TYPE="n1-standard-2"
-DISK_NAME=orthanc-db
+DB_DISK_NAME=orthanc-db
+INDEX_DISK_NAME=orthanc-index
 DV_USER=dvproc
 USER_AND_MACHINE=${DV_USER}@${MACHINE_NAME}
 VM_REGION=us-west1
@@ -103,9 +104,10 @@ then
 fi
 
 #
-# Attach disk holding the Orthanc DB
+# Attach disks holding the Orthanc DB and index
 #
-gcloud compute instances attach-disk "${MACHINE_NAME}" --disk "${DISK_NAME}" --project "${PROJECT}" --mode="rw"
+gcloud compute instances attach-disk "${MACHINE_NAME}" --disk="${DB_DISK_NAME}" --device-name="${DB_DISK_NAME}" --project="${PROJECT}" --mode="ro" --zone="${ZONE}"
+gcloud compute instances attach-disk "${MACHINE_NAME}" --disk="${INDEX_DISK_NAME}" --device-name="${INDEX_DISK_NAME}" --project="${PROJECT}" --mode="ro" --zone="${ZONE}"
 
 #
 # Copy and run a config script
