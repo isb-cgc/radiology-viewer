@@ -14,4 +14,5 @@
 	"CacheSize" : 10,
 	"Threads" : 4,
 	"EnableGdcm" : false
+    }
 }
