@@ -1,16 +1,17 @@
 {
-        "Name": "isb-cgc",
-        "DicomAet": "ISB-CGC",
-//        "DicomModalities": {
-//                "bar": ["BAR", "bar", 104]
-//        },
-    // HTTP port for the REST services and for the GUI
+    "Name": "isb-cgc",
+    "DicomAet": "ISB-CGC",
     "HttpPort" : 8042,
-        "PostgreSQL": {
-                "EnableIndex": true,
-                "EnableStorage": false,
-                "Host": "orthanc-index",
-                "Database": "postgres",
-                "Username": "postgres"
-        }
+    "PostgreSQL": {
+	"EnableIndex": true,
+	"EnableStorage": false,
+	"Host": "orthanc-index",
+	"Database": "postgres",
+	"Username": "postgres"
+    },
+    "WebViewer" : {
+	"CachePath" : "/var/lib/orthanc/cache",
+	"CacheSize" : 10,
+	"Threads" : 4,
+	"EnableGdcm" : false
 }
