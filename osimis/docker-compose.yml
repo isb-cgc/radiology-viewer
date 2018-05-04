@@ -6,20 +6,15 @@ services:
                 restart: unless-stopped
                 #ports: ["104:4242", "8042:8042"]
                 ports: ["8042:8042"]
-                #volumes: ["orthanc-storage:/var/lib/orthanc/db:Z"]
                 volumes: ["/mnt/disks/orthanc-db/storage:/var/lib/orthanc/db:Z"]
-                # to run Orthanc in 'verbose' mode, uncomment the 3 next lines
-#                entrypoint:
-#                       - Orthanc
-#                       - --verbose
-#                       - /etc/orthanc/
+
+                environment:
+                    - WVB_ENABLED=true
+                    - PG_ENABLED=true
+#                    - TRACE_ENABLED=true
+#                    - VERBOSE_ENABLED=true
+
         orthanc-index:
                 image: postgres
                 restart: unless-stopped
                 volumes: ["/mnt/disks/orthanc-index/postgresql/data:/var/lib/postgresql/data:Z"]
-                #volumes: ["orthanc-index:/var/lib/postgresql/data:Z"]
-#volumes:
-##        /mnt/disks/orthanc-db/storage:
-##        /mnt/disks/orthanc-index/postgresql/data:
-#        orthanc-storage:
-#        orthanc-index:

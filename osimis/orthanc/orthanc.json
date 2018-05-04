@@ -1,7 +1,6 @@
 {
     "Name": "isb-cgc",
     "DicomAet": "ISB-CGC",
-    "HttpPort" : 8042,
     "PostgreSQL": {
 	"EnableIndex": true,
 	"EnableStorage": false,
@@ -15,6 +14,6 @@
 	"Threads" : 4,
 	"EnableGdcm" : false,
 	//Don't show the 'Download Study' button
-    	"StudyDownloadEnabled": false
+        "StudyDownloadEnabled": false
     }
 }
