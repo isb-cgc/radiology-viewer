@@ -61,6 +61,13 @@ then
 	MACHINE_TYPE="n1-standard-1"
     fi
 
+    if [[ ${arr1[*]} =~ $1 ]]
+    then
+	ATTACH_MODE="ro"
+    else 
+	ATTACH_MODE="rw"
+    fi
+
 else
     echo "Usage: ./$PROGNAME <prod|dev|test|uat> <<external IP address>"
     exit 1;
@@ -79,6 +86,8 @@ STATIC_IP_ADDRESS=$BASE_NAME-$1
 MACHINE_NAME=$BASE_NAME-$1
 MACHINE_DESC="dicom viewer server for "$1
 DB_DISK_NAME=orthanc-db
+DB_DEVICE_NAME=orthanc-db
+INDEX_DEVICE_NAME=orthanc-index
 DV_USER=dvproc
 USER_AND_MACHINE=${DV_USER}@${MACHINE_NAME}
 VM_REGION=us-west1
@@ -125,12 +134,17 @@ fi
 #
 # Attach disks holding the Orthanc DB and index
 #
-gcloud compute instances attach-disk "${MACHINE_NAME}" --disk="${DB_DISK_NAME}" --device-name="${DB_DISK_NAME}" --project="${PROJECT}" --mode="ro" --zone="${ZONE}"
-gcloud compute instances attach-disk "${MACHINE_NAME}" --disk="${INDEX_DISK_NAME}" --device-name="${INDEX_DISK_NAME}" --project="${PROJECT}" --mode="rw" --zone="${ZONE}"
+gcloud compute instances attach-disk "${MACHINE_NAME}" --disk="${DB_DISK_NAME}" --device-name="${DB_DEVICE_NAME}" --project="${PROJECT}" --mode="${ATTACH_MODE}" --zone="${ZONE}"
+gcloud compute instances attach-disk "${MACHINE_NAME}" --disk="${INDEX_DISK_NAME}" --device-name="${INDEX_DEVICE_NAME}" --project="${PROJECT}" --mode="rw" --zone="${ZONE}"
 
 #
 # Copy and run a config script
 #
 sleep 10
 gcloud compute scp $(dirname $0)/install_deps.sh "${USER_AND_MACHINE}":/home/"${DV_USER}" --zone "${ZONE}" --project "${PROJECT}"
+while [ $? -ne 0 ]; do
+    sleep 2
+    gcloud compute scp $(dirname $0)/install_deps.sh "${USER_AND_MACHINE}":/home/"${DV_USER}" --zone "${ZONE}" --project "${PROJECT}"
+done
+
 gcloud compute ssh --zone "${ZONE}" --project "${PROJECT}" "${USER_AND_MACHINE}" -- '/home/'"${DV_USER}"'/install_deps.sh' "${SERVER_ADMIN}" "${SERVER_NAME}" "${SERVER_ALIAS}" "${SSL_BUCKET}" "${WEBAPP}"

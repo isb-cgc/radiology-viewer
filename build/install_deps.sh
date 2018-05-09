@@ -83,10 +83,10 @@ sudo mkdir -p /mnt/disks/orthanc-db
 sudo mkdir -p /mnt/disks/orthanc-index
 
 ### Install Tenable
-#./build/install_tenable.sh
+./build/install_tenable.sh
 
 ### Install clamav
-#./build/install_clamav.sh
+./build/install_clamav.sh
 
 ### Do the update/upgrade thing
 sudo apt-get -y update
