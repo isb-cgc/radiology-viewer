@@ -40,6 +40,27 @@ then
     else 
 	WEBAPP=isb-cgc-uat.appspot.com
     fi
+
+    if [ $1 == 'prod' ]
+    then
+	INDEX_DISK_NAME=orthanc-index-prod
+    elif [ $1 == 'dev' ]
+    then
+	INDEX_DISK_NAME=orthanc-index-dev
+    else 
+	INDEX_DISK_NAME=orthanc-index
+    fi
+
+    if [ $1 == 'prod' ]
+    then
+	MACHINE_TYPE="n1-standard-4"
+    elif [ $1 == 'dev' ]
+    then
+	MACHINE_TYPE="n1-standard-2"
+    else 
+	MACHINE_TYPE="n1-standard-1"
+    fi
+
 else
     echo "Usage: ./$PROGNAME <prod|dev|test|uat> <<external IP address>"
     exit 1;
@@ -57,9 +78,7 @@ BASE_NAME=dicom-viewer
 STATIC_IP_ADDRESS=$BASE_NAME-$1
 MACHINE_NAME=$BASE_NAME-$1
 MACHINE_DESC="dicom viewer server for "$1
-MACHINE_TYPE="n1-standard-2"
 DB_DISK_NAME=orthanc-db
-INDEX_DISK_NAME=orthanc-index
 DV_USER=dvproc
 USER_AND_MACHINE=${DV_USER}@${MACHINE_NAME}
 VM_REGION=us-west1
