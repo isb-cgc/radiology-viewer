@@ -6,7 +6,6 @@ if [ "$#" -ne 1 ]; then
     exit 1;
 fi
 
-#arr = ['prod','dev','test','uat']
 declare -a arr=('prod' 'dev' 'test' 'uat')
 if [[ ${arr[*]} =~ $1 ]]
 then
@@ -73,13 +72,6 @@ else
     exit 1;
 fi
 
-#if [ $1 == 'uat' ]
-#then
-#	MACHINE_TAG=
-#else
-#	MACHINE_TAG=http-server
-#fi
-
 MACHINE_TAG=dicom-viewer-vm
 BASE_NAME=dicom-viewer
 STATIC_IP_ADDRESS=$BASE_NAME-$1
@@ -118,7 +110,6 @@ if [ -n "$instances" ]
 then
     gcloud compute instances delete -q "${MACHINE_NAME}" --zone "${ZONE}" --project "${PROJECT}"
 fi
-#gcloud compute instances create "${MACHINE_NAME}" --description "${MACHINE_DESC}" --zone "${ZONE}" --machine-type "${MACHINE_TYPE}" --image-project "ubuntu-os-cloud" --image-family "ubuntu-1404-lts" --project "${PROJECT}" --address="${STATIC_IP_ADDRESS}"
 gcloud compute instances create "${MACHINE_NAME}" --description "${MACHINE_DESC}" --zone "${ZONE}" --machine-type "${MACHINE_TYPE}" --image-project "ubuntu-os-cloud" --image-family "ubuntu-1710" --project "${PROJECT}" --address="${STATIC_IP_ADDRESS}"
 #fi
 
