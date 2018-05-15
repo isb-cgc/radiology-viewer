@@ -22,9 +22,9 @@ then
 
     if [[ ${arr2[*]} =~ $1 ]]
     then
-	SSL_BUCKET=web-app-deployment-files/$1
+	CONFIG_BUCKET=web-app-deployment-files/$1
     else
-	SSL_BUCKET=webapp-deployment-files-$1
+	CONFIG_BUCKET=webapp-deployment-files-$1
     fi
 
     if [ $1 == 'prod' ]
@@ -138,4 +138,4 @@ while [ $? -ne 0 ]; do
     gcloud compute scp $(dirname $0)/install_deps.sh "${USER_AND_MACHINE}":/home/"${DV_USER}" --zone "${ZONE}" --project "${PROJECT}"
 done
 
-gcloud compute ssh --zone "${ZONE}" --project "${PROJECT}" "${USER_AND_MACHINE}" -- '/home/'"${DV_USER}"'/install_deps.sh' "${SERVER_ADMIN}" "${SERVER_NAME}" "${SERVER_ALIAS}" "${SSL_BUCKET}" "${WEBAPP}"
+gcloud compute ssh --zone "${ZONE}" --project "${PROJECT}" "${USER_AND_MACHINE}" -- '/home/'"${DV_USER}"'/install_deps.sh' "${SERVER_ADMIN}" "${SERVER_NAME}" "${SERVER_ALIAS}" "${CONFIG_BUCKET}" "${WEBAPP}"

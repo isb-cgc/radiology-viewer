@@ -6,7 +6,7 @@ VIEWER_VERSION=0.9
 SERVER_ADMIN=$1
 SERVER_NAME=$2
 SERVER_ALIAS=$3
-SSL_BUCKET=$4
+CONFIG_BUCKET=$4
 WEBAPP=$5
 
 ### See if anything is still holding lock on /var/lib/dpkg/lock
@@ -73,7 +73,7 @@ crontab mycron
 rm mycron
 
 ### Install nginx
-./build/install_nginx.sh $SSL_BUCKET
+./build/install_nginx.sh $CONFIG_BUCKET
 
 ### Configure for Orthanc
 #./build/config_orthanc.sh
@@ -83,7 +83,7 @@ sudo mkdir -p /mnt/disks/orthanc-db
 sudo mkdir -p /mnt/disks/orthanc-index
 
 ### Install Tenable
-./build/install_tenable.sh
+./build/install_tenable.sh $CONFIG_BUCKET
 
 ### Install clamav
 ./build/install_clamav.sh
