@@ -55,9 +55,8 @@ sudo apt-get -y install git
 wait_on_lock
 ### Other installation/config/startup scripts are in the radiology-viewer repo
 git clone https://github.com/isb-cgc/radiology-viewer.git
-git checkout ohif-viewer
-
 cd ./radiology-viewer
+git checkout ohif-viewer
 
 wait_on_lock
 ### Install docker

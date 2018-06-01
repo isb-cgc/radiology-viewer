@@ -11,6 +11,7 @@ services:
                 environment:
                     - WVB_ENABLED=true
                     - PG_ENABLED=true
+                    - DW_ENABLED=true
 #                    - TRACE_ENABLED=true
 #                    - VERBOSE_ENABLED=true
 

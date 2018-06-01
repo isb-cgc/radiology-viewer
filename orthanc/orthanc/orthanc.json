@@ -1,6 +1,12 @@
 {
     "Name": "isb-cgc",
     "DicomAet": "ISB-CGC",
+
+    // Enable the HTTP server. If this parameter is set to "false",
+    // Orthanc acts as a pure DICOM server. The REST API and Orthanc
+    // Explorer will not be available.
+    "HttpServerEnabled" : true,
+
     "PostgreSQL": {
 	"EnableIndex": true,
 	"EnableStorage": false,
@@ -15,5 +21,11 @@
 	"EnableGdcm" : false,
 	//Don't show the 'Download Study' button
         "StudyDownloadEnabled": false
+    },
+    // The list of the registered users. Because Orthanc uses HTTP
+    // Basic Authentication, the passwords are stored as plain
+    "RegisteredUsers" : {
+//      "orthanc" : "orthanc"
+      // "alice" : "alicePassword"                                                           
     }
 }
