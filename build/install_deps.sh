@@ -55,6 +55,7 @@ sudo apt-get -y install git
 wait_on_lock
 ### Other installation/config/startup scripts are in the radiology-viewer repo
 git clone https://github.com/isb-cgc/radiology-viewer.git
+git checkout ohif-viewer
 
 cd ./radiology-viewer
 
@@ -77,13 +78,16 @@ rm mycron
 
 ### Create the mount point for the DB and index, which we keep on separate images that survive replacing the VM
 sudo mkdir -p /mnt/disks/orthanc-db
-sudo mkdir -p /mnt/disks/orthanc-index
+#sudo mkdir -p /mnt/disks/orthanc-index
+
+### Install OHIF
+./build/install_ohif.sh
 
 ### Install Tenable
-./build/install_tenable.sh $CONFIG_BUCKET
+#./build/install_tenable.sh $CONFIG_BUCKET
 
 ### Install clamav
-./build/install_clamav.sh
+#./build/install_clamav.sh
 
 ### Do the update/upgrade thing
 sudo apt-get -y update

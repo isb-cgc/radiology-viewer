@@ -13,7 +13,7 @@ then
 
     if [[ ${arr1[*]} =~ $1 ]]
     then
-	PROJECT=isb-cgc
+	PROJECT=cgc-05-0003
     else
 	PROJECT=isb-cgc-$1
     fi
@@ -62,7 +62,8 @@ then
 
     if [[ ${arr1[*]} =~ $1 ]]
     then
-	ATTACH_MODE="ro"
+#	ATTACH_MODE="ro"
+	ATTACH_MODE="rw"
     else 
 	ATTACH_MODE="rw"
     fi
@@ -72,8 +73,8 @@ else
     exit 1;
 fi
 
-MACHINE_TAG=dicom-viewer-vm
-BASE_NAME=dicom-viewer
+MACHINE_TAG=ohif-dicom-viewer-vm
+BASE_NAME=ohif-dicom-viewer
 STATIC_IP_ADDRESS=$BASE_NAME-$1
 MACHINE_NAME=$BASE_NAME-$1
 MACHINE_DESC="dicom viewer server for "$1
@@ -84,14 +85,12 @@ DV_USER=dvproc
 USER_AND_MACHINE=${DV_USER}@${MACHINE_NAME}
 VM_REGION=us-west1
 ZONE=$VM_REGION-b
-IP_REGION=us-central1
-IP_SUBNET=${IP_REGION}
 
 SERVER_ADMIN=wl@isb-cgc.org
 SERVER_ALIAS=www.mvm-dot-isb-cgc.appspot.com
 
 #
-# Create static external IP address if not already existan
+# Create static external IP address if not already existant
 addresses=$(gcloud compute addresses list --project $PROJECT|grep $STATIC_IP_ADDRESS)
 if [ -z "$addresses" ]
 then
@@ -126,7 +125,7 @@ fi
 # Attach disks holding the Orthanc DB and index
 #
 gcloud compute instances attach-disk "${MACHINE_NAME}" --disk="${DB_DISK_NAME}" --device-name="${DB_DEVICE_NAME}" --project="${PROJECT}" --mode="${ATTACH_MODE}" --zone="${ZONE}"
-gcloud compute instances attach-disk "${MACHINE_NAME}" --disk="${INDEX_DISK_NAME}" --device-name="${INDEX_DEVICE_NAME}" --project="${PROJECT}" --mode="rw" --zone="${ZONE}"
+#gcloud compute instances attach-disk "${MACHINE_NAME}" --disk="${INDEX_DISK_NAME}" --device-name="${INDEX_DEVICE_NAME}" --project="${PROJECT}" --mode="rw" --zone="${ZONE}"
 
 #
 # Copy and run a config script
