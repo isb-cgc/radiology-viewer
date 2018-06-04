@@ -13,7 +13,7 @@ then
 
     if [[ ${arr1[*]} =~ $1 ]]
     then
-	PROJECT=cgc-05-0003
+	PROJECT=cgc-05-0011
     else
 	PROJECT=isb-cgc-$1
     fi
@@ -73,7 +73,7 @@ else
     exit 1;
 fi
 
-MACHINE_TAG=ohif-dicom-viewer-vm
+MACHINE_TAG=dicom-viewer-vm
 BASE_NAME=ohif-dicom-viewer
 STATIC_IP_ADDRESS=$BASE_NAME-$1
 MACHINE_NAME=$BASE_NAME-$1
