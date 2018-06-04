@@ -2,7 +2,7 @@
 
 set -x
 
-pushd /home/dvproc/Viewers
+pushd ./Viewers/OHIFViewer
 
 METEOR_PACKAGE_DIRS="../Packages" meteor --settings ../config/orthancDICOMWeb.json
 

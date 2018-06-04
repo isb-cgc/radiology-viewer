@@ -9,11 +9,11 @@ services:
                 volumes: ["/mnt/disks/orthanc-db/storage:/var/lib/orthanc/db:Z"]
 
                 environment:
-		    #Enable Web Viewer plugin
+                    #Enable Web Viewer plugin
                     - WVB_ENABLED=true
-		    # Enable Postgresql plugin
+                     # Enable Postgresql plugin
                     - PG_ENABLED=true
-		    # Enable DICOMweb plugin
+                    # Enable DICOMweb plugin
                     - DW_ENABLED=true
 #                    - TRACE_ENABLED=true
 #                    - VERBOSE_ENABLED=true
