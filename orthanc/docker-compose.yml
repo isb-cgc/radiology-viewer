@@ -6,14 +6,15 @@ services:
                 restart: unless-stopped
                 #ports: ["104:4242", "8042:8042"]
                 ports: ["8042:8042"]
-                volumes: ["/mnt/disks/orthanc-db/storage:/var/lib/orthanc/db:Z"]
+#                volumes: ["/mnt/disks/orthanc-db/storage:/var/lib/orthanc/db:Z"]
+                volumes: ["/mnt/disks/orthanc-db/storage_lite:/var/lib/orthanc/db:Z"]
 
                 environment:
-		    #Enable Web Viewer plugin
+                    #Enable Web Viewer plugin
                     - WVB_ENABLED=true
-		    # Enable Postgresql plugin
+                     # Enable Postgresql plugin
                     - PG_ENABLED=true
-		    # Enable DICOMweb plugin
+                    # Enable DICOMweb plugin
                     - DW_ENABLED=true
 #                    - TRACE_ENABLED=true
 #                    - VERBOSE_ENABLED=true
@@ -22,4 +23,6 @@ services:
                 image: postgres
                 restart: unless-stopped
 #                volumes: ["/mnt/disks/orthanc-index/postgresql/data:/var/lib/postgresql/data:Z"]
-                volumes: ["/var/lib/postgresql/data:/var/lib/postgresql/data:Z"]
+#                volumes: ["/var/lib/postgresql/data:/var/lib/postgresql/data:Z"]
+#                volumes: ["/mnt/disks/orthanc-db/postgresql/data:/var/lib/postgresql/data:Z"]
+                volumes: ["/mnt/disks/orthanc-db/postgresql_lite/data:/var/lib/postgresql/data:Z"]

@@ -1,5 +1,5 @@
 load.sh is used to load dicom zip files from GCS into Orthanc, e.g.:
-	>>gsutil ls gs://cgc-tcia-open/images/TCIA/images/TCGA-UCEC/*/*.zip > UCEC
+	>>gsutil ls gs://isb-tcia-open/images/TCGA-UCEC/*/*.zip > UCEC
 	>>./load.sh UCEC
 
 The completed zips are written to the file ./done. load.sh searches done for a zip,
