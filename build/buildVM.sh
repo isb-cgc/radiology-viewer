@@ -42,12 +42,12 @@ then
 
     if [ $1 == 'prod' ]
     then
-	INDEX_DISK_NAME=orthanc-index-prod
+	INDEX_DISK_NAME=ohif-orthanc-index-prod
     elif [ $1 == 'dev' ]
     then
-	INDEX_DISK_NAME=orthanc-index-dev
+	INDEX_DISK_NAME=ohif-orthanc-index-dev
     else 
-	INDEX_DISK_NAME=orthanc-index
+	INDEX_DISK_NAME=ohif-orthanc-index
     fi
 
     if [ $1 == 'prod' ]
@@ -62,8 +62,12 @@ then
 
     if [[ ${arr1[*]} =~ $1 ]]
     then
-#	ATTACH_MODE="ro"
-	ATTACH_MODE="rw"
+	if [ $PROJECT == 'cgc-05-0011'
+	then
+	    ATTACH_MODE="rw"
+	else
+	    ATTACH_MODE="ro"
+	fi
     else 
 	ATTACH_MODE="rw"
     fi
@@ -125,7 +129,10 @@ fi
 # Attach disks holding the Orthanc DB and index
 #
 gcloud compute instances attach-disk "${MACHINE_NAME}" --disk="${DB_DISK_NAME}" --device-name="${DB_DEVICE_NAME}" --project="${PROJECT}" --mode="${ATTACH_MODE}" --zone="${ZONE}"
-#gcloud compute instances attach-disk "${MACHINE_NAME}" --disk="${INDEX_DISK_NAME}" --device-name="${INDEX_DEVICE_NAME}" --project="${PROJECT}" --mode="rw" --zone="${ZONE}"
+if [ $PROJECT != 'cgc-05-0011' ]
+then
+    gcloud compute instances attach-disk "${MACHINE_NAME}" --disk="${INDEX_DISK_NAME}" --device-name="${INDEX_DEVICE_NAME}" --project="${PROJECT}" --mode="rw" --zone="${ZONE}"
+fi
 
 #
 # Copy and run a config script
