@@ -54,8 +54,7 @@ sudo apt-get -y install git
 
 wait_on_lock
 ### Other installation/config/startup scripts are in the radiology-viewer repo
-git clone https://github.com/isb-cgc/radiology-viewer.git
-
+git clone --branch ohif-d4c https://github.com/isb-cgc/radiology-viewer.git
 cd ./radiology-viewer
 
 wait_on_lock
@@ -65,6 +64,14 @@ wait_on_lock
 wait_on_lock
 ### Install docker-compose
 ./build/install_docker-compose.sh
+
+wait_on_lock
+### Install the OHIF viewer
+pushd ~
+git clone --branch ohif-d4c https://github.com/isb-cgc/ohif-viewer.git
+popd
+
+./build/install_ohif.sh
 
 ### Automatically run a script on rebooting
 crontab -l > mycron 
