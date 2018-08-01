@@ -62,7 +62,7 @@ then
 
     if [[ ${arr1[*]} =~ $1 ]]
     then
-	ATTACH_MODE="ro"
+	ATTACH_MODE="rw"
     else 
 	ATTACH_MODE="rw"
     fi
@@ -126,7 +126,10 @@ fi
 # Attach disks holding the DICOM DB and index
 #
 gcloud compute instances attach-disk "${MACHINE_NAME}" --disk="${DB_DISK_NAME}" --device-name="${DB_DEVICE_NAME}" --project="${PROJECT}" --mode="${ATTACH_MODE}" --zone="${ZONE}"
-gcloud compute instances attach-disk "${MACHINE_NAME}" --disk="${INDEX_DISK_NAME}" --device-name="${INDEX_DEVICE_NAME}" --project="${PROJECT}" --mode="rw" --zone="${ZONE}"
+if [ ${DB_DISK_NAME} != ${INDEX_DISK_NAME} ]
+then
+    gcloud compute instances attach-disk "${MACHINE_NAME}" --disk="${INDEX_DISK_NAME}" --device-name="${INDEX_DEVICE_NAME}" --project="${PROJECT}" --mode="rw" --zone="${ZONE}"
+fi
 
 #
 # Copy and run a config script
