@@ -59,7 +59,8 @@ cd ./radiology-viewer
 
 wait_on_lock
 ### Install docker
-./build/install_docker.sh
+#./build/install_docker.sh
+install_docker
 
 wait_on_lock
 ### Install docker-compose
