@@ -42,12 +42,12 @@ then
 
     if [ $1 == 'prod' ]
     then
-	INDEX_DISK_NAME=orthanc-index-prod
+	INDEX_DISK_NAME=dicom-db
     elif [ $1 == 'dev' ]
     then
-	INDEX_DISK_NAME=orthanc-index-dev
+	INDEX_DISK_NAME=dicom-db
     else 
-	INDEX_DISK_NAME=orthanc-index
+	INDEX_DISK_NAME=dicom-db
     fi
 
     if [ $1 == 'prod' ]
@@ -77,9 +77,9 @@ BASE_NAME=dicom-viewer
 STATIC_IP_ADDRESS=$BASE_NAME-$1
 MACHINE_NAME=$BASE_NAME-$1
 MACHINE_DESC="dicom viewer server for "$1
-DB_DISK_NAME=orthanc-db
-DB_DEVICE_NAME=orthanc-db
-INDEX_DEVICE_NAME=orthanc-index
+DB_DISK_NAME=dicom-db
+DB_DEVICE_NAME=dicom-db
+INDEX_DEVICE_NAME=dicom-db
 DV_USER=dvproc
 USER_AND_MACHINE=${DV_USER}@${MACHINE_NAME}
 VM_REGION=us-west1
@@ -123,7 +123,7 @@ then
 fi
 
 #
-# Attach disks holding the Orthanc DB and index
+# Attach disks holding the DICOM DB and index
 #
 gcloud compute instances attach-disk "${MACHINE_NAME}" --disk="${DB_DISK_NAME}" --device-name="${DB_DEVICE_NAME}" --project="${PROJECT}" --mode="${ATTACH_MODE}" --zone="${ZONE}"
 gcloud compute instances attach-disk "${MACHINE_NAME}" --disk="${INDEX_DISK_NAME}" --device-name="${INDEX_DEVICE_NAME}" --project="${PROJECT}" --mode="rw" --zone="${ZONE}"
