@@ -74,7 +74,8 @@ fi
 
 MACHINE_TAG=dicom-viewer-vm
 BASE_NAME=dicom-viewer
-STATIC_IP_ADDRESS=$BASE_NAME-$1
+STATIC_EXTERNAL_IP_ADDRESS=$BASE_NAME-$1
+STATIC_INTERNAL_IP_ADDRESS=$BASE_NAME-$1-internal
 MACHINE_NAME=$BASE_NAME-$1
 MACHINE_DESC="dicom viewer server for "$1
 DB_DISK_NAME=dicom-db
@@ -84,21 +85,33 @@ DV_USER=dvproc
 USER_AND_MACHINE=${DV_USER}@${MACHINE_NAME}
 VM_REGION=us-west1
 ZONE=$VM_REGION-b
-IP_REGION=us-central1
-IP_SUBNET=${IP_REGION}
+IP_REGION=${VM_REGION}
+IP_SUBNET=dicom
 
 SERVER_ADMIN=wl@isb-cgc.org
 SERVER_ALIAS=www.mvm-dot-isb-cgc.appspot.com
 
 #
-# Create static external IP address if not already existan
-addresses=$(gcloud compute addresses list --project $PROJECT|grep $STATIC_IP_ADDRESS)
+# Create static internal IP address if not already existant
+addresses=$(gcloud compute addresses list --project $PROJECT|grep $STATIC_INTERNAL_IP_ADDRESS)
 if [ -z "$addresses" ]
 then
-    gcloud compute addresses create $STATIC_IP_ADDRESS --region $VM_REGION --project $PROJECT
+    gcloud compute addresses create $STATIC_INTERNAL_IP_ADDRESS --region $IP_REGION --project $PROJECT --subnet $IP_SUBNET
 fi
 ### Get the numeric IP addr as SERVER_NAME
-ADDR_STRING=$(gcloud compute addresses describe $MACHINE_NAME --region $VM_REGION --project $PROJECT | grep address:)
+ADDR_STRING=$(gcloud compute addresses describe $STATIC_INTERNAL_IP_ADDRESS --region $VM_REGION --project $PROJECT | grep address:)
+#IFS=', ' read -r -a addr_string_array <<< "$ADDR_STRING"
+#SERVER_NAME="${addr_string_array[1]}"
+
+#
+# Create static external IP address if not already existant
+addresses=$(gcloud compute addresses list --project $PROJECT|grep $STATIC_EXTERNAL_IP_ADDRESS)
+if [ -z "$addresses" ]
+then
+    gcloud compute addresses create $STATIC_EXTERNAL_IP_ADDRESS --region $IP_REGION --project $PROJECT
+fi
+### Get the numeric IP addr as SERVER_NAME
+ADDR_STRING=$(gcloud compute addresses describe $STATIC_EXTERNAL_IP_ADDRESS --region $VM_REGION --project $PROJECT | grep address:)
 IFS=', ' read -r -a addr_string_array <<< "$ADDR_STRING"
 SERVER_NAME="${addr_string_array[1]}"
 
@@ -110,7 +123,7 @@ if [ -n "$instances" ]
 then
     gcloud compute instances delete -q "${MACHINE_NAME}" --zone "${ZONE}" --project "${PROJECT}"
 fi
-gcloud compute instances create "${MACHINE_NAME}" --description "${MACHINE_DESC}" --zone "${ZONE}" --machine-type "${MACHINE_TYPE}" --image-project "ubuntu-os-cloud" --image-family "ubuntu-1710" --project "${PROJECT}" --address="${STATIC_IP_ADDRESS}"
+gcloud compute instances create "${MACHINE_NAME}" --description "${MACHINE_DESC}" --zone "${ZONE}" --machine-type "${MACHINE_TYPE}" --image-project "ubuntu-os-cloud" --image-family "ubuntu-1710" --project "${PROJECT}" --address="${STATIC_EXTERNAL_IP_ADDRESS}" --private-network-ip="${STATIC_INTERNAL_IP_ADDRESS}" --network="${IP_SUBNET}"
 #fi
 
 #
