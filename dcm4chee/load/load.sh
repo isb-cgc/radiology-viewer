@@ -18,7 +18,7 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
 	       -v $PWD/dcmfiles:/tmp/dcmfiles dcm4che/dcm4che-tools:5.10.5 \
 	       storescu -cDCM4CHEE@arc:11112 /tmp/dcmfiles &> log.log
 	if grep -i -q error log.log; then
-	   cp log.log >> err.log;
+	   cp ./log.log >> ./err.log;
 	fi
 	rm log.log
 #	python -t upload.py localhost 8042 dcmfiles orthanc orthanc
