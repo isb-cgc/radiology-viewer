@@ -10,7 +10,7 @@ sudo apt-get install -y nginx
 
 # Replace default config and insert domain name of this VM                                                    
 sudo cp ./nginx/nginx.conf /etc/nginx/nginx.conf
-sudo sed -ie 's/SERVER_NAME/$MACHINE_URL/' /etc/nginx/nginx.conf
+sudo sed -ie "s/SERVER_NAME/$MACHINE_URL/" /etc/nginx/nginx.conf
 
 # Now install certbot                                                                                         
 #sudo rm -rf /etc/letsencrypt
