@@ -7,7 +7,7 @@ if [ "$#" -ne 1 ]; then
 fi
 
 #Set this according to the branch being developed/executed                                                    
-BRANCH=osimis-orhtanc-certbot
+BRANCH=osimis-orthanc-certbot
 
 declare -a arr=('prod' 'dev' 'test' 'uat')
 if [[ ${arr[*]} =~ $1 ]]

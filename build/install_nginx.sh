@@ -28,7 +28,7 @@ sudo rm ir_addr.txt
 
 # Ccreate a new cert. Note that Let's Encrypt strictly limits creating new certs on the                
 # same domain to 10 in a one week period.                                                                     
-sudo certbot --nginx -m $SERVER_ADMIN -d $MACHINE_URL --redirect --agree-tos --non-interactive
+sudo certbot --nginx -m $SERVER_ADMIN -d $MACHINE_URL --redirect --agree-tos --non-interactive --staging
 
 # Edit the letsencrypt config file so as to not enable TLS v1.0                                               
 sudo sed -ie 's/TLSv1 / /' /etc/letsencrypt/options-ssl-nginx.conf
