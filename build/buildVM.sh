@@ -6,6 +6,9 @@ if [ "$#" -ne 1 ]; then
     exit 1;
 fi
 
+#Set this according to the branch being developed/executed                                                    
+BRANCH=osimis-orhtanc-certbot
+
 declare -a arr=('prod' 'dev' 'test' 'uat')
 if [[ ${arr[*]} =~ $1 ]]
 then
@@ -72,11 +75,12 @@ else
     exit 1;
 fi
 
-MACHINE_TAG=dicom-viewer-vm
+MACHINE_TAGS=dicom-viewer-vm,http-server,ssh-from-whc,http-from-whc
 BASE_NAME=dicom-viewer
 STATIC_IP_ADDRESS=$BASE_NAME-$1
 MACHINE_NAME=$BASE_NAME-$1
 MACHINE_DESC="dicom viewer server for "$1
+MACHINE_URL=$MACHINE_NAME.isb-cgc.org
 DB_DISK_NAME=orthanc-db
 DB_DEVICE_NAME=orthanc-db
 INDEX_DEVICE_NAME=orthanc-index
@@ -87,9 +91,6 @@ ZONE=$VM_REGION-b
 IP_REGION=us-central1
 IP_SUBNET=${IP_REGION}
 
-SERVER_ADMIN=wl@isb-cgc.org
-SERVER_ALIAS=www.mvm-dot-isb-cgc.appspot.com
-
 #
 # Create static external IP address if not already existan
 addresses=$(gcloud compute addresses list --project $PROJECT|grep $STATIC_IP_ADDRESS)
@@ -98,9 +99,9 @@ then
     gcloud compute addresses create $STATIC_IP_ADDRESS --region $VM_REGION --project $PROJECT
 fi
 ### Get the numeric IP addr as SERVER_NAME
-ADDR_STRING=$(gcloud compute addresses describe $MACHINE_NAME --region $VM_REGION --project $PROJECT | grep address:)
-IFS=', ' read -r -a addr_string_array <<< "$ADDR_STRING"
-SERVER_NAME="${addr_string_array[1]}"
+#ADDR_STRING=$(gcloud compute addresses describe $MACHINE_NAME --region $VM_REGION --project $PROJECT | grep address:)
+#IFS=', ' read -r -a addr_string_array <<< "$ADDR_STRING"
+#SERVER_NAME="${addr_string_array[1]}"
 
 #
 # Delete existing VM, then spin up the new one:
@@ -116,10 +117,10 @@ gcloud compute instances create "${MACHINE_NAME}" --description "${MACHINE_DESC}
 #
 # Add network tag to machine:
 #
-sleep 10
-if [ -n "$MACHINE_TAG" ]
+#sleep 10
+if [ -n "$MACHINE_TAGS" ]
 then
-    gcloud compute instances add-tags "${MACHINE_NAME}" --tags "${MACHINE_TAG}" --project "${PROJECT}" --zone "${ZONE}"
+    gcloud compute instances add-tags "${MACHINE_NAME}" --tags "${MACHINE_TAGS}" --project "${PROJECT}" --zone "${ZONE}"
 fi
 
 #
@@ -138,4 +139,4 @@ while [ $? -ne 0 ]; do
     gcloud compute scp $(dirname $0)/install_deps.sh "${USER_AND_MACHINE}":/home/"${DV_USER}" --zone "${ZONE}" --project "${PROJECT}"
 done
 
-gcloud compute ssh --zone "${ZONE}" --project "${PROJECT}" "${USER_AND_MACHINE}" -- '/home/'"${DV_USER}"'/install_deps.sh' "${SERVER_ADMIN}" "${SERVER_NAME}" "${SERVER_ALIAS}" "${CONFIG_BUCKET}" "${WEBAPP}"
+gcloud compute ssh --zone "${ZONE}" --project "${PROJECT}" "${USER_AND_MACHINE}" -- '/home/'"${DV_USER}"'/install_deps.sh' "${BRANCH}" "${MACHINE_URL}" "${CONFIG_BUCKET}" "${WEBAPP}"

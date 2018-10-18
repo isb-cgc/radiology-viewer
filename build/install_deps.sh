@@ -3,11 +3,10 @@
 set -x
 
 VIEWER_VERSION=0.9
-SERVER_ADMIN=$1
-SERVER_NAME=$2
-SERVER_ALIAS=$3
-CONFIG_BUCKET=$4
-WEBAPP=$5
+BRANCH=$1
+MACHINE_URL=$2
+CONFIG_BUCKET=$3
+WEBAPP=$4
 
 ### See if anything is still holding lock on /var/lib/dpkg/lock
 function wait_on_lock() 
@@ -49,13 +48,15 @@ function install_docker()
 }
 
 wait_on_lock
+sudo apt-get update
+
+wait_on_lock
 ### Install git
 sudo apt-get -y install git
 
 wait_on_lock
 ### Other installation/config/startup scripts are in the radiology-viewer repo
-git clone https://github.com/isb-cgc/radiology-viewer.git
-
+git clone -b $BRANCH https://github.com/isb-cgc/radiology-viewer.git
 cd ./radiology-viewer
 
 wait_on_lock
@@ -68,12 +69,12 @@ wait_on_lock
 
 ### Automatically run a script on rebooting
 crontab -l > mycron 
-echo "@reboot $HOME/radiology-viewer/startup.sh $VIEWER_VERSION $SERVER_ADMIN $SERVER_NAME $SERVER_ALIAS $WEBAPP" >> mycron
+echo "@reboot $HOME/radiology-viewer/startup.sh $VIEWER_VERSION $WEBAPP" >> mycron
 crontab mycron
 rm mycron
 
-### Install nginx
-./build/install_nginx.sh $CONFIG_BUCKET
+### Install nginx and certbot
+./build/install_nginx.sh $CONFIG_BUCKET $MACHINE_URL
 
 ### Create the mount point for the DB and index, which we keep on separate images that survive replacing the VM
 sudo mkdir -p /mnt/disks/orthanc-db
