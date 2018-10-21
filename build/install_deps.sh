@@ -57,7 +57,7 @@ sudo apt-get -y install git
 wait_on_lock
 ### Other installation/config/startup scripts are in the radiology-viewer repo
 #git clone --branch ohif-d4c https://github.com/isb-cgc/radiology-viewer.git
-git clone --branch $BRANCH} https://github.com/isb-cgc/radiology-viewer.git
+git clone --branch $BRANCH https://github.com/isb-cgc/radiology-viewer.git
 cd ./radiology-viewer
 
 wait_on_lock
