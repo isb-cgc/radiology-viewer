@@ -3,11 +3,13 @@
 set -x
 
 VIEWER_VERSION=0.9
-SERVER_ADMIN=$1
-SERVER_NAME=$2
-SERVER_ALIAS=$3
-CONFIG_BUCKET=$4
-WEBAPP=$5
+#SERVER_ADMIN=$1
+#SERVER_NAME=$2
+#SERVER_ALIAS=$3
+BRANCH=$1
+MACHINE_URL=$2
+CONFIG_BUCKET=$3
+WEBAPP=$4
 
 ### See if anything is still holding lock on /var/lib/dpkg/lock
 function wait_on_lock() 
@@ -54,7 +56,8 @@ sudo apt-get -y install git
 
 wait_on_lock
 ### Other installation/config/startup scripts are in the radiology-viewer repo
-git clone --branch ohif-d4c https://github.com/isb-cgc/radiology-viewer.git
+#git clone --branch ohif-d4c https://github.com/isb-cgc/radiology-viewer.git
+git clone --branch $BRANCH} https://github.com/isb-cgc/radiology-viewer.git
 cd ./radiology-viewer
 
 wait_on_lock
@@ -88,10 +91,10 @@ sudo mkdir -p /mnt/disks/orthanc-db
 sudo mkdir -p /mnt/disks/orthanc-index
 
 ### Install Tenable
-./build/install_tenable.sh $CONFIG_BUCKET
+#./build/install_tenable.sh $CONFIG_BUCKET
 
 ### Install clamav
-./build/install_clamav.sh
+#./build/install_clamav.sh
 
 ### Do the update/upgrade thing
 sudo apt-get -y update
