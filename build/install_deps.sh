@@ -86,9 +86,11 @@ rm mycron
 ### Install nginx
 ./build/install_nginx.sh $CONFIG_BUCKET
 
-### Create the mount point for the DB and index, which we keep on separate images that survive replacing the VM
-sudo mkdir -p /mnt/disks/orthanc-db
-sudo mkdir -p /mnt/disks/orthanc-index
+#### Create the mount point for the DB and index, which we keep on separate images that survive replacing the VM
+#sudo mkdir -p /mnt/disks/orthanc-db
+#sudo mkdir -p /mnt/disks/orthanc-index
+### Create the mount point for the DB which we keep on separate images that survive replacing the VM
+sudo mkdir -p /mnt/disks/dicom-db
 
 ### Install Tenable
 #./build/install_tenable.sh $CONFIG_BUCKET
