@@ -80,7 +80,7 @@ popd
 ### Automatically run a script on rebooting
 crontab -l > mycron 
 #echo "@reboot $HOME/radiology-viewer/startup.sh $VIEWER_VERSION $SERVER_ADMIN $SERVER_NAME $SERVER_ALIAS $WEBAPP" >> mycron
-echo "@reboot $HOME/radiology-viewer/startup.sh >> mycron
+echo "@reboot $HOME/radiology-viewer/startup.sh" >> mycron
 crontab mycron
 rm mycron
 
