@@ -110,7 +110,7 @@ if [ -n "$instances" ]
 then
     gcloud compute instances delete -q "${MACHINE_NAME}" --zone "${ZONE}" --project "${PROJECT}"
 fi
-gcloud compute instances create "${MACHINE_NAME}" --description "${MACHINE_DESC}" --zone "${ZONE}" --machine-type "${MACHINE_TYPE}" --image-project "ubuntu-os-cloud" --image-family "ubuntu-1710" --project "${PROJECT}" --address="${STATIC_IP_ADDRESS}"
+gcloud compute instances create "${MACHINE_NAME}" --description "${MACHINE_DESC}" --zone "${ZONE}" --machine-type "${MACHINE_TYPE}" --image-project "ubuntu-os-cloud" --image-family "ubuntu-1804-lts" --project "${PROJECT}" --address="${STATIC_IP_ADDRESS}"
 #fi
 
 #
