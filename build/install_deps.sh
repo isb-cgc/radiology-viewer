@@ -93,11 +93,13 @@ rm mycron
 ### Create the mount point for the DB which we keep on separate images that survive replacing the VM
 sudo mkdir -p /mnt/disks/dicom-db
 
+set x
+
 ### Install Tenable
-#./build/install_tenable.sh $CONFIG_BUCKET
+./build/install_tenable.sh $CONFIG_BUCKET
 
 ### Install clamav
-#./build/install_clamav.sh
+./build/install_clamav.sh
 
 ### Do the update/upgrade thing
 sudo apt-get -y update
