@@ -72,7 +72,7 @@ wait_on_lock
 wait_on_lock
 ### Install the OHIF viewer
 pushd ~
-git clone --branch ohif-d4c https://github.com/isb-cgc/ohif-viewer.git
+git clone --branch $BRANCH https://github.com/isb-cgc/ohif-viewer.git
 popd
 
 ./build/install_ohif.sh
