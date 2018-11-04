@@ -70,12 +70,9 @@ wait_on_lock
 ./build/install_docker-compose.sh
 
 wait_on_lock
-### Install the OHIF viewer
-pushd ~
-git clone --branch ohif-d4c https://github.com/isb-cgc/ohif-viewer.git
-popd
-
-./build/install_ohif.sh
+### Enable pulling docker images from gcr
+sudo ln -s /snap/google-cloud-sdk/current/bin/docker-credential-gcloud /snap/bin/docker-credential-gcloud
+gcloud alpha auth configure-docker
 
 ### Automatically run a script on rebooting
 crontab -l > mycron 
