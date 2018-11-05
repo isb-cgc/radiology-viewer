@@ -50,6 +50,12 @@ function install_docker()
     sudo usermod -aG docker $USER
 }
 
+whoami 
+
+wait_on_lock
+sudo apt-get -y update
+sudo apt-get -y upgrade
+
 wait_on_lock
 ### Install git
 sudo apt-get -y install git

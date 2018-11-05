@@ -128,8 +128,7 @@ then
     gcloud compute instances delete -q "${MACHINE_NAME}" --zone "${ZONE}" --project "${PROJECT}"
 fi
 #gcloud compute instances create "${MACHINE_NAME}" --description "${MACHINE_DESC}" --zone "${ZONE}" --machine-type "${MACHINE_TYPE}" --image-project "ubuntu-os-cloud" --image-family "ubuntu-1710" --project "${PROJECT}" --address="${STATIC_EXTERNAL_IP_ADDRESS}" --private-network-ip="${STATIC_INTERNAL_IP_ADDRESS}" --network="${IP_SUBNET}"
-gcloud compute instances create "${MACHINE_NAME}" --description "${MACHINE_DESC}" --zone "${ZONE}" --machine-type "${MACHINE_TYPE}" --image-project "ubuntu-os-cloud" --image-family "ubuntu-1804-lts" --project "${PROJECT}" --address="${STATIC_EXTERNAL_IP_ADDRESS}"
-#fi
+gcloud compute instances create "${MACHINE_NAME}" --description "${MACHINE_DESC}" --zone "${ZONE}" --machine-type "${MACHINE_TYPE}" --image-project "ubuntu-os-cloud" --image-family "ubuntu-1804-lts" --project "${PROJECT}" --address="${STATIC_EXTERNAL_IP_ADDRESS}" --scopes="/web-app-deployment-files/dev/dicom-viewer"
 
 #
 # Add network tag to machine:
