@@ -4,6 +4,8 @@
 
 set -x
 
+whoami
+
 PROGNAME=$(basename "$0")
 
 if [ "$#" -ne 1 ]; then
