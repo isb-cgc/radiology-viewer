@@ -10,6 +10,7 @@ BRANCH=$1
 MACHINE_URL=$2
 CONFIG_BUCKET=$3
 WEBAPP=$4
+PROJECT=$5
 
 ### See if anything is still holding lock on /var/lib/dpkg/lock
 function wait_on_lock() 
@@ -82,7 +83,7 @@ wait_on_lock
 ### Automatically run a script on rebooting
 crontab -l > mycron 
 #echo "@reboot $HOME/radiology-viewer/startup.sh $VIEWER_VERSION $SERVER_ADMIN $SERVER_NAME $SERVER_ALIAS $WEBAPP" >> mycron
-echo "@reboot $HOME/radiology-viewer/startup.sh" >> mycron
+echo "@reboot $HOME/radiology-viewer/startup.sh $PROJECT" >> mycron
 crontab mycron
 rm mycron
 
