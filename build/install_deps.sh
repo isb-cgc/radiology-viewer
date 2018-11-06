@@ -51,8 +51,6 @@ function install_docker()
     sudo usermod -aG docker $USER
 }
 
-whoami 
-
 wait_on_lock
 sudo apt-get -y update
 sudo apt-get -y upgrade
@@ -61,11 +59,8 @@ wait_on_lock
 ### Install git
 sudo apt-get -y install git
 
-ls -la $HOME
-
 wait_on_lock
 ### Other installation/config/startup scripts are in the radiology-viewer repo
-#git clone --branch ohif-d4c https://github.com/isb-cgc/radiology-viewer.git
 git clone --branch $BRANCH https://github.com/isb-cgc/radiology-viewer.git
 cd ./radiology-viewer
 
@@ -74,28 +69,30 @@ wait_on_lock
 #./build/install_docker.sh
 install_docker
 
-ls -la $HOME
-
 wait_on_lock
 ### Install docker-compose
 ./build/install_docker-compose.sh
 
+export PATH=/snap/bin:$PATH
+#echo $PATH
+# Execute gcloud and gsutil to ensure that confif files which they create have
+# dvproc as owner (not root)
+ls -la $HOME
+gcloud auth list
+gcloud beta auth list
+gsutil ls
+docker --version
 ls -la $HOME
 
 wait_on_lock
 ###  Install ohif-viewer
 ./build/install_ohif.sh
 
-ls -la $HOME
-
 ### Automatically run a script on rebooting
 crontab -l > mycron 
-#echo "@reboot $HOME/radiology-viewer/startup.sh $VIEWER_VERSION $SERVER_ADMIN $SERVER_NAME $SERVER_ALIAS $WEBAPP" >> mycron
 echo "@reboot $HOME/radiology-viewer/startup.sh $PROJECT $MACHINE_URL 2>&1 | tee $HOME/radiology-viewer/log.txt" >> mycron
 crontab mycron
 rm mycron
-
-ls -la $HOME
 
 ### Install nginx
 ./build/install_nginx.sh $CONFIG_BUCKET $MACHINE_URL

@@ -3,7 +3,7 @@
 set -x
 
 ### Enable pulling ohif-viewer image from gcr
-sudo ln -s /snap/google-cloud-sdk/current/bin/docker-credential-gcloud /snap/bin/docker-credential-gcloud
+#sudo ln -s /snap/google-cloud-sdk/current/bin/docker-credential-gcloud /snap/bin/docker-credential-gcloud
 gcloud beta auth configure-docker --quiet
 
 pushd ~
