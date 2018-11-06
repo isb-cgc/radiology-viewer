@@ -8,11 +8,11 @@ whoami
 
 PROGNAME=$(basename "$0")
 
-if [ "$#" -ne 1 ]; then
-    echo "Usage: ./$PROGNAME <project>"
+if [ "$#" -ne 2 ]; then
+    echo "Usage: ./$PROGNAME <project> <machine url>"
     exit 1;
 fi
 
 cd /home/dvproc/radiology-viewer
 
-./run_viewer.sh $1
+./run_viewer.sh $1 $2

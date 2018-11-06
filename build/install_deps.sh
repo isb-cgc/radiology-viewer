@@ -83,7 +83,7 @@ wait_on_lock
 ### Automatically run a script on rebooting
 crontab -l > mycron 
 #echo "@reboot $HOME/radiology-viewer/startup.sh $VIEWER_VERSION $SERVER_ADMIN $SERVER_NAME $SERVER_ALIAS $WEBAPP" >> mycron
-echo "@reboot $HOME/radiology-viewer/startup.sh $PROJECT 2>&1 | tee $HOME/radiology-viewer/log.txt" >> mycron
+echo "@reboot $HOME/radiology-viewer/startup.sh $PROJECT $MACHINE_URL 2>&1 | tee $HOME/radiology-viewer/log.txt" >> mycron
 crontab mycron
 rm mycron
 

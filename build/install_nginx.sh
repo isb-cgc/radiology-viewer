@@ -5,17 +5,16 @@ set -x
 CONFIG_BUCKET=$1
 MACHINE_URL=$2
 
-## First install nginx
-#sudo apt-get install -y nginx
-#
-#sudo apt-get update
-#sudo apt-get install software-properties-common
-#sudo add-apt-repository -y ppa:certbot/certbot
-#sudo apt-get update
-#sudo apt-get install -y python-certbot-nginx 
+# First install nginx
+sudo apt-get install -y nginx
+
+sudo apt-get update
+sudo apt-get install software-properties-common
+sudo add-apt-repository -y ppa:certbot/certbot
+sudo apt-get update
+sudo apt-get install -y python-certbot-nginx 
 
 # If there is currently a certificate for this domain, use the cached configs
-#CERT=`sudo certbot certificates | grep "Certificate Path: /etc/letsencrypt/$MACHINE_URL/fullchain.pem"`
 CERT=`sudo certbot certificates | grep "Certificate Path: /etc/letsencrypt/live/$MACHINE_URL/fullchain.pem" `
 echo $CERT
 if [ ! -z "$CERT" ]; then
@@ -26,7 +25,6 @@ if [ ! -z "$CERT" ]; then
 
     sudo gsutil cp gs://$CONFIG_BUCKET/dicom_viewer/nginx.conf /etc/nginx/nginx.conf
 else
-    exit
     # Replace default config and insert domain name of this VM
     sudo cp ./nginx/nginx.conf /etc/nginx/nginx.conf
     sudo sed -ie "s/SERVER_NAME/$MACHINE_URL/" /etc/nginx/nginx.conf
