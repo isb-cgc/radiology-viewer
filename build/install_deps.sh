@@ -61,6 +61,8 @@ wait_on_lock
 ### Install git
 sudo apt-get -y install git
 
+ls -la $HOME
+
 wait_on_lock
 ### Other installation/config/startup scripts are in the radiology-viewer repo
 #git clone --branch ohif-d4c https://github.com/isb-cgc/radiology-viewer.git
@@ -72,13 +74,19 @@ wait_on_lock
 #./build/install_docker.sh
 install_docker
 
+ls -la $HOME
+
 wait_on_lock
 ### Install docker-compose
 ./build/install_docker-compose.sh
 
+ls -la $HOME
+
 wait_on_lock
 ###  Install ohif-viewer
 ./build/install_ohif.sh
+
+ls -la $HOME
 
 ### Automatically run a script on rebooting
 crontab -l > mycron 
@@ -87,8 +95,12 @@ echo "@reboot $HOME/radiology-viewer/startup.sh $PROJECT $MACHINE_URL 2>&1 | tee
 crontab mycron
 rm mycron
 
+ls -la $HOME
+
 ### Install nginx
 ./build/install_nginx.sh $CONFIG_BUCKET $MACHINE_URL
+
+ls -la $HOME
 
 #### Create the mount point for the DB and index, which we keep on separate images that survive replacing the VM
 #sudo mkdir -p /mnt/disks/orthanc-db
@@ -96,7 +108,7 @@ rm mycron
 ### Create the mount point for the DB which we keep on separate images that survive replacing the VM
 sudo mkdir -p /mnt/disks/dicom-db
 
-set x
+ls -la $HOME
 
 ### Install Tenable
 ./build/install_tenable.sh $CONFIG_BUCKET
@@ -107,6 +119,8 @@ set x
 ### Do the update/upgrade thing
 sudo apt-get -y update
 sudo apt-get -y upgrade
+
+ls -la $HOME
 
 ### Reboot so that update/upgrade takes effect
 sudo reboot

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+#set -x
 
 CONFIG_BUCKET=$1
 

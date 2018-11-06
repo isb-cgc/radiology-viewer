@@ -18,6 +18,9 @@ sudo apt-get install -y python-certbot-nginx
 CERT=`sudo certbot certificates | grep "Certificate Path: /etc/letsencrypt/live/$MACHINE_URL/fullchain.pem" `
 echo $CERT
 if [ ! -z "$CERT" ]; then
+    echo Yes
+    exit
+
     # A certificate exists. Get the saved keys, etc. and nginx.conf
     sudo gsutil cp gs://$CONFIG_BUCKET/dicom_viewer/letsencrypt.tar letsencrypt.tar
     sudo tar xvf letsencrypt.tar -C /
@@ -25,6 +28,8 @@ if [ ! -z "$CERT" ]; then
 
     sudo gsutil cp gs://$CONFIG_BUCKET/dicom_viewer/nginx.conf /etc/nginx/nginx.conf
 else
+    echo No
+    exit
     # Replace default config and insert domain name of this VM
     sudo cp ./nginx/nginx.conf /etc/nginx/nginx.conf
     sudo sed -ie "s/SERVER_NAME/$MACHINE_URL/" /etc/nginx/nginx.conf
