@@ -9,6 +9,8 @@ fi
 #Set this according to the branch being developed/executed
 BRANCH=ohif-d4c-certbot
 
+BASE_NAME=dicom-viewer
+
 declare -a arr=('prod' 'dev' 'test' 'uat')
 if [[ ${arr[*]} =~ $1 ]]
 then
@@ -45,10 +47,10 @@ then
 
     if [ $1 == 'prod' ]
     then
-	INDEX_DISK_NAME=dicom-db
+	INDEX_DISK_NAME=${BASE_NAME}-$1-index
     elif [ $1 == 'dev' ]
     then
-	INDEX_DISK_NAME=dicom-db
+	INDEX_DISK_NAME=${BASE_NAME}-$1-index
     else 
 	INDEX_DISK_NAME=dicom-db
     fi
@@ -65,7 +67,7 @@ then
 
     if [[ ${arr1[*]} =~ $1 ]]
     then
-	ATTACH_MODE="rw"
+	ATTACH_MODE="ro"
     else 
 	ATTACH_MODE="rw"
     fi
@@ -76,7 +78,6 @@ else
 fi
 
 MACHINE_TAGS=dicom-viewer-vm,http-server,ssh-from-whc,http-from-whc
-BASE_NAME=dicom-viewer
 STATIC_EXTERNAL_IP_ADDRESS=$BASE_NAME-$1
 #STATIC_INTERNAL_IP_ADDRESS=$BASE_NAME-$1-internal
 MACHINE_NAME=$BASE_NAME-$1
@@ -84,7 +85,7 @@ MACHINE_DESC="dicom viewer server for "$1
 MACHINE_URL=$MACHINE_NAME.isb-cgc.org
 DB_DISK_NAME=dicom-db
 DB_DEVICE_NAME=dicom-db
-INDEX_DEVICE_NAME=dicom-db
+INDEX_DEVICE_NAME=dicom-index
 DV_USER=dvproc
 USER_AND_MACHINE=${DV_USER}@${MACHINE_NAME}
 VM_REGION=us-west1
