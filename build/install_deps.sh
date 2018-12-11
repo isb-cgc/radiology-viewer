@@ -104,7 +104,6 @@ ls -la $HOME
 #sudo mkdir -p /mnt/disks/orthanc-index
 ### Create the mount point for the DB which we keep on separate images that survive replacing the VM
 sudo mkdir -p /mnt/disks/dicom-db
-sudo mkdir -p /mnt/disks/dicom-index
 
 ls -la $HOME
 

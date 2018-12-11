@@ -45,14 +45,11 @@ then
 	WEBAPP=isb-cgc-uat.appspot.com
     fi
 
-    if [ $1 == 'prod' ]
+    if [ $1 == 'dev' ]
     then
-	INDEX_DISK_NAME=${BASE_NAME}-$1-index
-    elif [ $1 == 'dev' ]
-    then
-	INDEX_DISK_NAME=${BASE_NAME}-$1-index
+	DB_DISK_NAME=dicom-db-dev
     else 
-	INDEX_DISK_NAME=dicom-db
+	DB_DISK_NAME=dicom-db
     fi
 
     if [ $1 == 'prod' ]
@@ -83,7 +80,7 @@ STATIC_EXTERNAL_IP_ADDRESS=$BASE_NAME-$1
 MACHINE_NAME=$BASE_NAME-$1
 MACHINE_DESC="dicom viewer server for "$1
 MACHINE_URL=$MACHINE_NAME.isb-cgc.org
-DB_DISK_NAME=dicom-db
+#DB_DISK_NAME=dicom-db
 DB_DEVICE_NAME=dicom-db
 INDEX_DEVICE_NAME=dicom-index
 DV_USER=dvproc
@@ -144,10 +141,10 @@ fi
 # Attach disks holding the DICOM DB and index
 #
 gcloud compute instances attach-disk "${MACHINE_NAME}" --disk="${DB_DISK_NAME}" --device-name="${DB_DEVICE_NAME}" --project="${PROJECT}" --mode="${ATTACH_MODE}" --zone="${ZONE}"
-if [ ${DB_DISK_NAME} != ${INDEX_DISK_NAME} ]
-then
-    gcloud compute instances attach-disk "${MACHINE_NAME}" --disk="${INDEX_DISK_NAME}" --device-name="${INDEX_DEVICE_NAME}" --project="${PROJECT}" --mode="rw" --zone="${ZONE}"
-fi
+#if [ ${DB_DISK_NAME} != ${INDEX_DISK_NAME} ]
+#then
+#    gcloud compute instances attach-disk "${MACHINE_NAME}" --disk="${INDEX_DISK_NAME}" --device-name="${INDEX_DEVICE_NAME}" --project="${PROJECT}" --mode="rw" --zone="${ZONE}"
+#fi
 
 #
 # Copy and run a config script
