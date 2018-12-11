@@ -64,7 +64,7 @@ then
 
     if [[ ${arr1[*]} =~ $1 ]]
     then
-	ATTACH_MODE="ro"
+	ATTACH_MODE="rw"
     else 
 	ATTACH_MODE="rw"
     fi
