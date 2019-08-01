@@ -7,7 +7,7 @@ if [ "$#" -ne 1 ]; then
 fi
 
 #Set this according to the branch being developed/executed
-BRANCH=ohif-d4c-certbot
+BRANCH=master
 
 BASE_NAME=dicom-viewer
 
