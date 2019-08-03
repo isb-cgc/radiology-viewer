@@ -1,0 +1,10 @@
+load.sh is used to load dicom zip files from GCS into Orthanc, e.g.:
+	>> # Onetime installation of dependencies for loading data
+	>>./config_loader.sh
+
+	>> # Get list of zips to load
+	>>./getzips.sh UCEC > foo
+	>>./load.sh foo 
+
+The completed zips are written to the file ./done. load.sh searches done for a zip,
+and skips loading it if found.

@@ -6,6 +6,11 @@ if [ "$#" -ne 1 ]; then
     exit 1;
 fi
 
+#Set this according to the branch being developed/executed
+BRANCH=ohif-d4c-certbot
+
+BASE_NAME=dicom-viewer
+
 declare -a arr=('prod' 'dev' 'test' 'uat')
 if [[ ${arr[*]} =~ $1 ]]
 then
@@ -40,14 +45,11 @@ then
 	WEBAPP=isb-cgc-uat.appspot.com
     fi
 
-    if [ $1 == 'prod' ]
+    if [ $1 == 'dev' ]
     then
-	INDEX_DISK_NAME=orthanc-index-prod
-    elif [ $1 == 'dev' ]
-    then
-	INDEX_DISK_NAME=orthanc-index-dev
+	DB_DISK_NAME=dicom-db-dev
     else 
-	INDEX_DISK_NAME=orthanc-index
+	DB_DISK_NAME=dicom-db
     fi
 
     if [ $1 == 'prod' ]
@@ -72,33 +74,46 @@ else
     exit 1;
 fi
 
-MACHINE_TAG=dicom-viewer-vm
-BASE_NAME=dicom-viewer
-STATIC_IP_ADDRESS=$BASE_NAME-$1
+MACHINE_TAGS=dicom-viewer-vm,http-server,ssh-from-whc,http-from-whc
+STATIC_EXTERNAL_IP_ADDRESS=$BASE_NAME-$1
+#STATIC_INTERNAL_IP_ADDRESS=$BASE_NAME-$1-internal
 MACHINE_NAME=$BASE_NAME-$1
 MACHINE_DESC="dicom viewer server for "$1
-DB_DISK_NAME=orthanc-db
-DB_DEVICE_NAME=orthanc-db
-INDEX_DEVICE_NAME=orthanc-index
+MACHINE_URL=$MACHINE_NAME.isb-cgc.org
+#DB_DISK_NAME=dicom-db
+DB_DEVICE_NAME=dicom-db
+INDEX_DEVICE_NAME=dicom-index
 DV_USER=dvproc
 USER_AND_MACHINE=${DV_USER}@${MACHINE_NAME}
 VM_REGION=us-west1
 ZONE=$VM_REGION-b
-IP_REGION=us-central1
-IP_SUBNET=${IP_REGION}
+IP_REGION=${VM_REGION}
+#IP_SUBNET=dicom
 
 SERVER_ADMIN=wl@isb-cgc.org
 SERVER_ALIAS=www.mvm-dot-isb-cgc.appspot.com
 
+##
+## Create static internal IP address if not already existant
+#addresses=$(gcloud compute addresses list --project $PROJECT|grep $STATIC_INTERNAL_IP_ADDRESS)
+#if [ -z "$addresses" ]
+#then
+#    gcloud compute addresses create $STATIC_INTERNAL_IP_ADDRESS --region $IP_REGION --project $PROJECT --subnet $IP_SUBNET
+#fi
+#### Get the numeric IP addr as SERVER_NAME
+#ADDR_STRING=$(gcloud compute addresses describe $STATIC_INTERNAL_IP_ADDRESS --region $VM_REGION --project $PROJECT | grep address:)
+#IFS=', ' read -r -a addr_string_array <<< "$ADDR_STRING"
+##SERVER_NAME="${addr_string_array[1]}"
+
 #
-# Create static external IP address if not already existan
-addresses=$(gcloud compute addresses list --project $PROJECT|grep $STATIC_IP_ADDRESS)
+# Create static external IP address if not already existant
+addresses=$(gcloud compute addresses list --project $PROJECT|grep $STATIC_EXTERNAL_IP_ADDRESS)
 if [ -z "$addresses" ]
 then
-    gcloud compute addresses create $STATIC_IP_ADDRESS --region $VM_REGION --project $PROJECT
+    gcloud compute addresses create $STATIC_EXTERNAL_IP_ADDRESS --region $IP_REGION --project $PROJECT
 fi
 ### Get the numeric IP addr as SERVER_NAME
-ADDR_STRING=$(gcloud compute addresses describe $MACHINE_NAME --region $VM_REGION --project $PROJECT | grep address:)
+ADDR_STRING=$(gcloud compute addresses describe $STATIC_EXTERNAL_IP_ADDRESS --region $VM_REGION --project $PROJECT | grep address:)
 IFS=', ' read -r -a addr_string_array <<< "$ADDR_STRING"
 SERVER_NAME="${addr_string_array[1]}"
 
@@ -110,23 +125,26 @@ if [ -n "$instances" ]
 then
     gcloud compute instances delete -q "${MACHINE_NAME}" --zone "${ZONE}" --project "${PROJECT}"
 fi
-gcloud compute instances create "${MACHINE_NAME}" --description "${MACHINE_DESC}" --zone "${ZONE}" --machine-type "${MACHINE_TYPE}" --image-project "ubuntu-os-cloud" --image-family "ubuntu-1710" --project "${PROJECT}" --address="${STATIC_IP_ADDRESS}"
-#fi
+#gcloud compute instances create "${MACHINE_NAME}" --description "${MACHINE_DESC}" --zone "${ZONE}" --machine-type "${MACHINE_TYPE}" --image-project "ubuntu-os-cloud" --image-family "ubuntu-1710" --project "${PROJECT}" --address="${STATIC_EXTERNAL_IP_ADDRESS}" --private-network-ip="${STATIC_INTERNAL_IP_ADDRESS}" --network="${IP_SUBNET}"
+gcloud compute instances create "${MACHINE_NAME}" --description "${MACHINE_DESC}" --zone "${ZONE}" --machine-type "${MACHINE_TYPE}" --image-project "ubuntu-os-cloud" --image-family "ubuntu-1804-lts" --project "${PROJECT}" --address="${STATIC_EXTERNAL_IP_ADDRESS}" --scopes="https://www.googleapis.com/auth/cloud-platform"
 
 #
 # Add network tag to machine:
 #
 sleep 10
-if [ -n "$MACHINE_TAG" ]
+if [ -n "$MACHINE_TAGS" ]
 then
-    gcloud compute instances add-tags "${MACHINE_NAME}" --tags "${MACHINE_TAG}" --project "${PROJECT}" --zone "${ZONE}"
+    gcloud compute instances add-tags "${MACHINE_NAME}" --tags "${MACHINE_TAGS}" --project "${PROJECT}" --zone "${ZONE}"
 fi
 
 #
-# Attach disks holding the Orthanc DB and index
+# Attach disks holding the DICOM DB and index
 #
 gcloud compute instances attach-disk "${MACHINE_NAME}" --disk="${DB_DISK_NAME}" --device-name="${DB_DEVICE_NAME}" --project="${PROJECT}" --mode="${ATTACH_MODE}" --zone="${ZONE}"
-gcloud compute instances attach-disk "${MACHINE_NAME}" --disk="${INDEX_DISK_NAME}" --device-name="${INDEX_DEVICE_NAME}" --project="${PROJECT}" --mode="rw" --zone="${ZONE}"
+#if [ ${DB_DISK_NAME} != ${INDEX_DISK_NAME} ]
+#then
+#    gcloud compute instances attach-disk "${MACHINE_NAME}" --disk="${INDEX_DISK_NAME}" --device-name="${INDEX_DEVICE_NAME}" --project="${PROJECT}" --mode="rw" --zone="${ZONE}"
+#fi
 
 #
 # Copy and run a config script
@@ -138,4 +156,4 @@ while [ $? -ne 0 ]; do
     gcloud compute scp $(dirname $0)/install_deps.sh "${USER_AND_MACHINE}":/home/"${DV_USER}" --zone "${ZONE}" --project "${PROJECT}"
 done
 
-gcloud compute ssh --zone "${ZONE}" --project "${PROJECT}" "${USER_AND_MACHINE}" -- '/home/'"${DV_USER}"'/install_deps.sh' "${SERVER_ADMIN}" "${SERVER_NAME}" "${SERVER_ALIAS}" "${CONFIG_BUCKET}" "${WEBAPP}"
+gcloud compute ssh --zone "${ZONE}" --project "${PROJECT}" "${USER_AND_MACHINE}" -- '/home/'"${DV_USER}"'/install_deps.sh' "${BRANCH}" "${MACHINE_URL}" "${CONFIG_BUCKET}" "${WEBAPP}" "${PROJECT}"

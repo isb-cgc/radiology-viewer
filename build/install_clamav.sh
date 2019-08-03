@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+#set -x
 
 ## Install clamav                                                                                                                     
 sudo apt install -y clamav clamav-daemon                                                                                           
