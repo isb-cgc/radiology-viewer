@@ -7,7 +7,7 @@ if [ "$#" -ne 1 ]; then
 fi
 
 #Set this according to the branch being developed/executed
-BRANCH=master
+BRANCH=$(git branch --show-current)
 
 BASE_NAME=dicom-viewer
 
