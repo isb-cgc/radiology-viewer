@@ -16,18 +16,24 @@ if [[ ${arr[*]} =~ $1 ]]
 then
     declare -a arr1=('prod','dev')
 
-    if [[ ${arr1[*]} =~ $1 ]]
+    if [ $1 == 'prod' ]
     then
 	PROJECT=isb-cgc
+    elif [ $1 = 'dev' ]
+    then
+	PROJECT=isb-cgc-dev-1
     else
 	PROJECT=isb-cgc-$1
     fi
 
     declare -a arr2=('dev','prod')
 
-    if [[ ${arr2[*]} =~ $1 ]]
+    if [ $1 == 'prod' ]
     then
-	CONFIG_BUCKET=web-app-deployment-files/$1
+	CONFIG_BUCKET=web-app-deployment-files/prod
+    elif [ $1 == 'dev' ]
+    then
+	CONFIG_BUCKET=webapp-deployment-files-isb-cgc-dev
     else
 	CONFIG_BUCKET=webapp-deployment-files-$1
     fi
@@ -37,7 +43,7 @@ then
 	WEBAPP=isb-cgc.appspot.com
     elif [ $1 == 'dev' ]
     then
-	WEBAPP=mvm-dot-isb-cgc.appspot.com
+	WEBAPP=dev.isb-cgc.org
     elif [ $1 == 'test' ]
     then
 	WEBAPP=isb-cgc-test.appspot.com
@@ -47,7 +53,7 @@ then
 
     if [ $1 == 'dev' ]
     then
-	DB_DISK_NAME=dicom-db-dev
+	DB_DISK_NAME=dicom-db
     else 
 	DB_DISK_NAME=dicom-db
     fi
@@ -55,9 +61,6 @@ then
     if [ $1 == 'prod' ]
     then
 	MACHINE_TYPE="n1-standard-4"
-    elif [ $1 == 'dev' ]
-    then
-	MACHINE_TYPE="n1-standard-2"
     else 
 	MACHINE_TYPE="n1-standard-1"
     fi
@@ -74,13 +77,11 @@ else
     exit 1;
 fi
 
-MACHINE_TAGS=dicom-viewer-vm,http-server,ssh-from-whc,http-from-whc
+MACHINE_TAGS=viewer-vm,ssh-from-whc
 STATIC_EXTERNAL_IP_ADDRESS=$BASE_NAME-$1
-#STATIC_INTERNAL_IP_ADDRESS=$BASE_NAME-$1-internal
 MACHINE_NAME=$BASE_NAME-$1
 MACHINE_DESC="dicom viewer server for "$1
 MACHINE_URL=$MACHINE_NAME.isb-cgc.org
-#DB_DISK_NAME=dicom-db
 DB_DEVICE_NAME=dicom-db
 INDEX_DEVICE_NAME=dicom-index
 DV_USER=dvproc
@@ -88,22 +89,9 @@ USER_AND_MACHINE=${DV_USER}@${MACHINE_NAME}
 VM_REGION=us-west1
 ZONE=$VM_REGION-b
 IP_REGION=${VM_REGION}
-#IP_SUBNET=dicom
 
 SERVER_ADMIN=wl@isb-cgc.org
 SERVER_ALIAS=www.mvm-dot-isb-cgc.appspot.com
-
-##
-## Create static internal IP address if not already existant
-#addresses=$(gcloud compute addresses list --project $PROJECT|grep $STATIC_INTERNAL_IP_ADDRESS)
-#if [ -z "$addresses" ]
-#then
-#    gcloud compute addresses create $STATIC_INTERNAL_IP_ADDRESS --region $IP_REGION --project $PROJECT --subnet $IP_SUBNET
-#fi
-#### Get the numeric IP addr as SERVER_NAME
-#ADDR_STRING=$(gcloud compute addresses describe $STATIC_INTERNAL_IP_ADDRESS --region $VM_REGION --project $PROJECT | grep address:)
-#IFS=', ' read -r -a addr_string_array <<< "$ADDR_STRING"
-##SERVER_NAME="${addr_string_array[1]}"
 
 #
 # Create static external IP address if not already existant
@@ -125,7 +113,6 @@ if [ -n "$instances" ]
 then
     gcloud compute instances delete -q "${MACHINE_NAME}" --zone "${ZONE}" --project "${PROJECT}"
 fi
-#gcloud compute instances create "${MACHINE_NAME}" --description "${MACHINE_DESC}" --zone "${ZONE}" --machine-type "${MACHINE_TYPE}" --image-project "ubuntu-os-cloud" --image-family "ubuntu-1710" --project "${PROJECT}" --address="${STATIC_EXTERNAL_IP_ADDRESS}" --private-network-ip="${STATIC_INTERNAL_IP_ADDRESS}" --network="${IP_SUBNET}"
 gcloud compute instances create "${MACHINE_NAME}" --description "${MACHINE_DESC}" --zone "${ZONE}" --machine-type "${MACHINE_TYPE}" --image-project "ubuntu-os-cloud" --image-family "ubuntu-1804-lts" --project "${PROJECT}" --address="${STATIC_EXTERNAL_IP_ADDRESS}" --scopes="https://www.googleapis.com/auth/cloud-platform"
 
 #
@@ -141,10 +128,6 @@ fi
 # Attach disks holding the DICOM DB and index
 #
 gcloud compute instances attach-disk "${MACHINE_NAME}" --disk="${DB_DISK_NAME}" --device-name="${DB_DEVICE_NAME}" --project="${PROJECT}" --mode="${ATTACH_MODE}" --zone="${ZONE}"
-#if [ ${DB_DISK_NAME} != ${INDEX_DISK_NAME} ]
-#then
-#    gcloud compute instances attach-disk "${MACHINE_NAME}" --disk="${INDEX_DISK_NAME}" --device-name="${INDEX_DEVICE_NAME}" --project="${PROJECT}" --mode="rw" --zone="${ZONE}"
-#fi
 
 #
 # Copy and run a config script
