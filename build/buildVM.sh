@@ -77,7 +77,7 @@ else
     exit 1;
 fi
 
-MACHINE_TAGS=viewer-vm,ssh-from-whc
+MACHINE_TAGS=viewer-vm,ssh-from-whc, http-server
 STATIC_EXTERNAL_IP_ADDRESS=$BASE_NAME-$1
 MACHINE_NAME=$BASE_NAME-$1
 MACHINE_DESC="dicom viewer server for "$1
